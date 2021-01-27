@@ -1,2 +1,101 @@
 {{!-- * Setup the `index.handlebars` to have the template that Handlebars can render onto. --}}
 {{!-- * Create a button in `index.handlebars` that will submit the user input into the database. --}}
+
+
+<div class = "container"> 
+
+<h1>Eat-Da-Burger!</h1>
+    
+    <div class = "container"> 
+        <div class ="row">
+            <div class="col">
+            <h2>Burgers to Eat:</h2>
+            <ul>
+            {{#each burgers}}
+            {{#unless devoured}}
+           
+            <p>Burger: {{this.burgers}} {{this.burger_names}}</p>
+            <button type="submit" class="devour-btn select-burger" data-id="{{this.id}}" data-burger_names="{{this.burger_names}}">Devour</button>
+            {{/unless}}
+            {{/each}} 
+            </ul>
+            </div>
+        </div>
+
+        <div class ="row">
+            <div class="col">
+            <h2>Burgers Devoured!</h2>
+            <ul>
+            {{#each burgers}}
+            {{#if devoured}}
+          
+            <p> Devoured:{{this.burgers}} {{this.burger_names}}</p>
+         
+            {{/if}}
+            {{/each}} 
+            </ul>
+        </div>
+        </div>
+</div>
+
+    <div class="container">
+        <form>
+            <label >Add-Da-New-Burger</label><br>
+            <input type="text" id="new-name">       
+            <button type="submit" class="add-btn add-burger">Add Burger</button>
+        </form>
+
+
+</div>
+</div>
+
+
+
+<script type="text/javascript">
+  // Make sure we wait to attach our handlers until the DOM is fully loaded.
+
+$(function() {
+  $(".select-burger").on("click", function(event) {
+    var id = $(this).data("id");
+    var burger_names = $(this).data("burger_names");
+    var eatenBurger = true;
+
+    var burgerSelection = {
+      burger_names: burger_names,
+      devoured: eatenBurger
+    };
+    console.log(burgerSelection);
+
+    // Send the PUT request.
+    $.ajax("/api/burgers/" + id, {
+      type: "PUT",
+      data: devoured,
+    }).then(
+      function() {
+        console.log(devoured);
+        location.reload(); //reload page
+      }
+    );
+  });
+
+  $(".add-burger").on("submit", function(event) {
+   
+    event.preventDefault();
+
+    var newBurger = {
+      burger_name: $(".new-name").val().trim(),
+    }
+
+    // Send the POST request.
+    $.ajax("/api/burgers", {
+      type: "POST",
+      data: burger_names,
+      {{!-- need data type --}}
+    }).then(
+      function() {
+        console.log("burger");
+        location.reload(); //reload page
+      }
+    );
+  });
+});
